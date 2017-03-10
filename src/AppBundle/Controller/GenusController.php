@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\AppBundle;
 use AppBundle\Entity\Genus;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -58,34 +59,38 @@ class GenusController extends Controller
     // Associative array called The container (Container is an object !!!)
     // Each object has a key ->mailer -> mailer object
     /**
-     * @Route("/genus/{genusName}")
+     * @Route("/genus/{genusName}", name="genus_show")
      */
     public function showAction($genusName)
     {
+        $em = $this->getDoctrine()->getManager();
+        $genus = $em->getRepository('AppBundle:Genus')
+            ->findOneBy(['name'=> $genusName]);
 
-        $funFact = 'Octopuses can change the color of their body in just *three-tenths* of a second!';
 
-        // get the my_markdown_cache servive from DoctrineCacheBundle
-        // configured under the name my_markdown_cache
-        $cache = $this->get('doctrine_cache.providers.my_markdown_cache');
-        // Make sure the same string doesn't parsed twice
-        // Add a key to the string
-        $key = md5($funFact);
-
-        if ($cache->contains($key)){
-            $funFact = $cache->fetch($key);
-        } else {
-            // Parse through markdown
-            sleep(1);
-            $funFact = $this->get('markdown.parser')->transform($funFact);
-            $cache->save($key,$funFact);
+        if (!$genus){
+            throw $this->createNotFoundException('No genus Found');
         }
+//        // get the my_markdown_cache servive from DoctrineCacheBundle
+//        // configured under the name my_markdown_cache
+//        $cache = $this->get('doctrine_cache.providers.my_markdown_cache');
+//        // Make sure the same string doesn't parsed twice
+//        // Add a key to the string
+//        $key = md5($funFact);
+//
+//        if ($cache->contains($key)){
+//            $funFact = $cache->fetch($key);
+//        } else {
+//            // Parse through markdown
+//            sleep(1);
+//            $funFact = $this->get('markdown.parser')->transform($funFact);
+//            $cache->save($key,$funFact);
+//        }
 
 
 
         return $this->render('genus/show.html.twig',[
-            'name' => $genusName,
-            'funFact' => $funFact
+            'genus' => $genus
         ]);
 
     }
