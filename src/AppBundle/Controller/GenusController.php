@@ -37,6 +37,23 @@ class GenusController extends Controller
 
         return new Response('<html><body>Genus generated</body></html>');
     }
+
+    /**
+     * @Route("/genus")
+     */
+    public function listAction()
+    {
+        //get entity manager
+        $em = $this->getDoctrine()->getManager();
+
+        // returns a repository object
+        $genuses = $em->getRepository('AppBundle:Genus')
+            ->findAll();
+
+        return $this->render('genus/list.html.twig',[
+            'genuses' => $genuses
+        ]);
+    }
     // Service : Useful objects
     // Associative array called The container (Container is an object !!!)
     // Each object has a key ->mailer -> mailer object
