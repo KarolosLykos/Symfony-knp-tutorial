@@ -24,7 +24,22 @@ class GenusController extends Controller
 
         $funFact = 'Octopuses can change the color of their body in just *three-tenths* of a second!';
 
-        $funFact = $this->get('markdown.parser')->transform($funFact);
+        // get the my_markdown_cache servive from DoctrineCacheBundle
+        // configured under the name my_markdown_cache
+        $cache = $this->get('doctrine_cache.providers.my_markdown_cache');
+        // Make sure the same string doesn't parsed twice
+        // Add a key to the string
+        $key = md5($funFact);
+
+        if ($cache->contains($key)){
+            $funFact = $cache->fetch($key);
+        } else {
+            // Parse through markdown
+            sleep(1);
+            $funFact = $this->get('markdown.parser')->transform($funFact);
+            $cache->save($key,$funFact);
+        }
+
 
         return $this->render('genus/show.html.twig',[
             'name' => $genusName,
