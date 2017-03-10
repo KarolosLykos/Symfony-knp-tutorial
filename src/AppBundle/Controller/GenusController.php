@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\Genus;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 // To get access to the service container you have to extend Symfony's baseController
@@ -13,6 +14,29 @@ use Symfony\Component\HttpFoundation\Response;
 
 class GenusController extends Controller
 {
+    /**
+     * @Route("/genus/new")
+     */
+    public function newAction()
+    {
+        // Create a new genus object
+        $genus = new Genus();
+
+        // Set the name
+        $genus->setName('Octopus'.rand(1,100));
+        $genus->setSubFamily('Octopodinae');
+        $genus->setSpeciesCount(rand(100, 99999));
+
+
+        // Use the entity manager service to query and save
+        $em = $this->getDoctrine()->getManager();
+        // Tell doctrine that you want to save the obj
+        $em->persist($genus);
+        // finally doctrine figures what query to use and savas the obj
+        $em->flush();
+
+        return new Response('<html><body>Genus generated</body></html>');
+    }
     // Service : Useful objects
     // Associative array called The container (Container is an object !!!)
     // Each object has a key ->mailer -> mailer object
@@ -39,6 +63,7 @@ class GenusController extends Controller
             $funFact = $this->get('markdown.parser')->transform($funFact);
             $cache->save($key,$funFact);
         }
+
 
 
         return $this->render('genus/show.html.twig',[
