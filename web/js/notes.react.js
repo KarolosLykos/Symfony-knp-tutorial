@@ -12,7 +12,8 @@ var NoteSection = React.createClass({
 
     loadNotesFromServer: function() {
         $.ajax({
-            url: '/genus/octopus/notes',
+            // pass the dynamic value . We will pass a url property to note section
+            url: this.props.url,
             success: function (data) {
                 this.setState({notes: data.notes});
             }.bind(this)

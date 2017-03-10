@@ -23,15 +23,14 @@ class GenusController extends Controller
     {
 
         return $this->render('genus/show.html.twig',[
-            'name' => $genusName,
-            'notes' => $notes
+            'name' => $genusName
         ]);
 
     }
 
     // Method get --Without this route will match this request using any http method (post,delete,get) Optional
     /**
-     * @Route("/genus/{genusName}/notes")
+     * @Route("/genus/{genusName}/notes", name="genus_show_notes")
      * @Method("GET")
      */
     public function getNotesAction()
