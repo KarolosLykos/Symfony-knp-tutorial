@@ -15,6 +15,8 @@
                 <dd>{{ genus.speciesCount }}</dd>
                 <dt>Fun Fact:</dt>
                 <dd>{{ genus.funFact }}</dd>
+                <dt>Recent Notes:</dt>
+                <dd>{{ recentNotesCount }}</dd>
             </dl>
         </div>
     </div>
@@ -35,7 +37,7 @@
     <script type="text/babel" src="{{ asset('js/notes.react.js') }}"></script>
     <script type="text/babel">
         {# get the url to the API end point #}
-        var notesUrl = '{{ path('genus_show_notes',{'genusName': genus.name}) }}';
+        var notesUrl = '{{ path('genus_show_notes',{'name': genus.name}) }}';
 
         ReactDOM.render(
             // pass to react as a prop

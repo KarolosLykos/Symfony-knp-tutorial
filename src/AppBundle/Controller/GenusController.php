@@ -3,7 +3,6 @@
 namespace AppBundle\Controller;
 
 
-use AppBundle\AppBundle;
 use AppBundle\Entity\Genus;
 use AppBundle\Entity\GenusNote;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -54,7 +53,6 @@ class GenusController extends Controller
     {
         //get entity manager
         $em = $this->getDoctrine()->getManager();
-        dump($em->getRepository('AppBundle:Genus'));
         // returns a repository object
         $genuses = $em->getRepository('AppBundle:Genus')
             ->findAllPublishedOrderedBySize();
@@ -95,26 +93,34 @@ class GenusController extends Controller
 //            $cache->save($key,$funFact);
 //        }
 
-
+        $recentNotes = $em->getRepository('AppBundle:GenusNote')
+            ->findAllRecentNotesForGenus($genus);
 
         return $this->render('genus/show.html.twig',[
-            'genus' => $genus
+            'genus' => $genus,
+            'recentNotesCount' => count($recentNotes)
         ]);
 
     }
 
     // Method get --Without this route will match this request using any http method (post,delete,get) Optional
     /**
-     * @Route("/genus/{genusName}/notes", name="genus_show_notes")
+     * @Route("/genus/{name}/notes", name="genus_show_notes")
      * @Method("GET")
      */
-    public function getNotesAction()
+    public function getNotesAction(Genus $genus)
     {
-        $notes = [
-            ['id' => 1, 'username' => 'AquaPelham', 'avatarUri' => '/images/leanna.jpeg', 'note' => 'Octopus asked me a riddle, outsmarted me', 'date' => 'Dec. 10, 2015'],
-            ['id' => 2, 'username' => 'AquaWeaver', 'avatarUri' => '/images/ryan.jpeg', 'note' => 'I counted 8 legs... as they wrapped around me', 'date' => 'Dec. 1, 2015'],
-            ['id' => 3, 'username' => 'AquaPelham', 'avatarUri' => '/images/leanna.jpeg', 'note' => 'Inked!', 'date' => 'Aug. 20, 2015'],
-        ];
+        $notes = [];
+        foreach ($genus->getNotes() as $note)
+        {
+            $notes[] = [
+                'id' => $note->getId(),
+                'username' => $note->getUsername(),
+                'avatarUri' => '/images/'.$note->getUserAvatarFilename(),
+                'notes' => $note->getNote(),
+                'date' => $note->getCreatedAt()->format('M d, Y')
+            ];
+        }
 
         // json structure
         $data = [
