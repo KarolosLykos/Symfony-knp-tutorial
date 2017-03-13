@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\AppBundle;
 use AppBundle\Entity\Genus;
+use AppBundle\Entity\GenusNote;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 // To get access to the service container you have to extend Symfony's baseController
@@ -28,11 +29,18 @@ class GenusController extends Controller
         $genus->setSubFamily('Octopodinae');
         $genus->setSpeciesCount(rand(100, 99999));
 
+        $genusNote = new GenusNote();
+        $genusNote->setUsername('AquaWeaver');
+        $genusNote->setUserAvatarFilename('ryan.jpeg');
+        $genusNote->setNote('I counted 8 legs.... as they wrapped around me');
+        $genusNote->setCreatedAt(new \DateTime('-1 month'));
+        $genusNote->setGenus($genus);
 
         // Use the entity manager service to query and save
         $em = $this->getDoctrine()->getManager();
         // Tell doctrine that you want to save the obj
         $em->persist($genus);
+        $em->persist($genusNote);
         // finally doctrine figures what query to use and savas the obj
         $em->flush();
 
@@ -46,10 +54,10 @@ class GenusController extends Controller
     {
         //get entity manager
         $em = $this->getDoctrine()->getManager();
-
+        dump($em->getRepository('AppBundle:Genus'));
         // returns a repository object
         $genuses = $em->getRepository('AppBundle:Genus')
-            ->findAll();
+            ->findAllPublishedOrderedBySize();
 
         return $this->render('genus/list.html.twig',[
             'genuses' => $genuses
