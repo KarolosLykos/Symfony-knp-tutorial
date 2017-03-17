@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Genus;
 use AppBundle\Entity\GenusNote;
+use AppBundle\Service\MarkdownTransformer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 // To get access to the service container you have to extend Symfony's baseController
@@ -77,27 +78,18 @@ class GenusController extends Controller
         if (!$genus){
             throw $this->createNotFoundException('No genus Found');
         }
-//        // get the my_markdown_cache servive from DoctrineCacheBundle
-//        // configured under the name my_markdown_cache
-//        $cache = $this->get('doctrine_cache.providers.my_markdown_cache');
-//        // Make sure the same string doesn't parsed twice
-//        // Add a key to the string
-//        $key = md5($funFact);
-//
-//        if ($cache->contains($key)){
-//            $funFact = $cache->fetch($key);
-//        } else {
-//            // Parse through markdown
-//            sleep(1);
-//            $funFact = $this->get('markdown.parser')->transform($funFact);
-//            $cache->save($key,$funFact);
-//        }
+
+        // new object , instantiate new object
+        $transformer = $this->get('app.markdown_transformer');
+        // use the parse function from MarkdownTransformer with $genus->getFunFact()
+        $funFact = $transformer->parse($genus->getFunFact());
 
         $recentNotes = $em->getRepository('AppBundle:GenusNote')
             ->findAllRecentNotesForGenus($genus);
 
         return $this->render('genus/show.html.twig',[
             'genus' => $genus,
+            'funFact'=> $funFact,
             'recentNotesCount' => count($recentNotes)
         ]);
 

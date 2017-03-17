@@ -54,7 +54,7 @@ var NoteBox = React.createClass({
         return (
             <div className="cd-timeline-block">
                 <div className="cd-timeline-img">
-                    <img src={this.props.avatarUri} className="img-circle" alt="Leanna!" />
+                    <img src={'http://localhost:8080/app_test1/web'+this.props.avatarUri} className="img-circle" alt="Image" />
                 </div>
                 <div className="cd-timeline-content">
                     <h2><a href="#">{this.props.username}</a></h2>
