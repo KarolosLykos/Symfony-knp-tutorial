@@ -1,69 +1,70 @@
-Symfony Standard Edition
-========================
+# Joyful Development with Symfony
 
-Welcome to the Symfony Standard Edition - a fully-functional Symfony
-application that you can use as the skeleton for your new applications.
+Well hi there! This repository holds the code and script
+for the Symfony course on KnpUniversity.
 
-For details on how to download and get started with Symfony, see the
-[Installation][1] chapter of the Symfony Documentation.
+## Setup
 
-What's inside?
---------------
+If you've just downloaded the code, congratulations!
 
-The Symfony Standard Edition is configured with the following defaults:
+To get it working, follow these steps:
 
-  * An AppBundle you can use to start coding;
+**Setup parameters.yml**
 
-  * Twig as the only configured template engine;
+First, make sure you have an `app/config/parameters.yml`
+file (you should). If you don't, copy `app/config/parameters.yml.dist`
+to get it.
 
-  * Doctrine ORM/DBAL;
+Next, look at the configuration and make any adjustments you
+need (like `database_password`).
 
-  * Swiftmailer;
+**Download Composer dependencies**
 
-  * Annotations enabled for everything.
+Make sure you have [Composer installed](https://getcomposer.org/download/)
+and then run:
 
-It comes pre-configured with the following bundles:
+```
+composer install
+```
 
-  * **FrameworkBundle** - The core Symfony framework bundle
+You may alternatively need to run `php composer.phar install`, depending
+on how you installed Composer.
 
-  * [**SensioFrameworkExtraBundle**][6] - Adds several enhancements, including
-    template and routing annotation capability
+**Setup the Database**
 
-  * [**DoctrineBundle**][7] - Adds support for the Doctrine ORM
+Again, make sure `app/config/parameters.yml` is setup
+for your computer. Then, create the database and the
+schema!
 
-  * [**TwigBundle**][8] - Adds support for the Twig templating engine
+```
+php bin/console doctrine:database:create
+php bin/console doctrine:migrations:migrate
+php bin/console doctrine:fixtures:load
+```
 
-  * [**SecurityBundle**][9] - Adds security by integrating Symfony's security
-    component
+If you get an error that the database exists, that should
+be ok. But if you have problems, completely drop the
+database (`doctrine:database:drop --force`) and try again.
 
-  * [**SwiftmailerBundle**][10] - Adds support for Swiftmailer, a library for
-    sending emails
+**Start the built-in web server**
 
-  * [**MonologBundle**][11] - Adds support for Monolog, a logging library
+You can use Nginx or Apache, but the built-in web server works
+great:
 
-  * **WebProfilerBundle** (in dev/test env) - Adds profiling functionality and
-    the web debug toolbar
+```
+php bin/console server:run
+```
 
-  * **SensioDistributionBundle** (in dev/test env) - Adds functionality for
-    configuring and working with Symfony distributions
+Now check out the site at `http://localhost:8000`
 
-  * [**SensioGeneratorBundle**][13] (in dev/test env) - Adds code generation
-    capabilities
+Have fun!
 
-  * **DebugBundle** (in dev/test env) - Adds Debug and VarDumper component
-    integration
+## Have some Ideas or Feedback?
 
-All libraries and bundles included in the Symfony Standard Edition are
-released under the MIT or BSD license.
+And as always, thanks so much for your support and letting us do what
+we love!
 
-Enjoy!
+If you have suggestions or questions, please feel free to
+open an issue or message us.
 
-[1]:  https://symfony.com/doc/3.2/setup.html
-[6]:  https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/index.html
-[7]:  https://symfony.com/doc/3.2/doctrine.html
-[8]:  https://symfony.com/doc/3.2/templating.html
-[9]:  https://symfony.com/doc/3.2/security.html
-[10]: https://symfony.com/doc/3.2/email.html
-[11]: https://symfony.com/doc/3.2/logging.html
-[12]: https://symfony.com/doc/3.2/assetic/asset_management.html
-[13]: https://symfony.com/doc/current/bundles/SensioGeneratorBundle/index.html
+<3 Your friends at KnpUniversity

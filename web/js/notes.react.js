@@ -12,7 +12,6 @@ var NoteSection = React.createClass({
 
     loadNotesFromServer: function() {
         $.ajax({
-            // pass the dynamic value . We will pass a url property to note section
             url: this.props.url,
             success: function (data) {
                 this.setState({notes: data.notes});
@@ -54,7 +53,7 @@ var NoteBox = React.createClass({
         return (
             <div className="cd-timeline-block">
                 <div className="cd-timeline-img">
-                    <img src={'http://localhost:8080/app_test1/web'+this.props.avatarUri} className="img-circle" alt="Image" />
+                    <img src={this.props.avatarUri} className="img-circle" alt="Leanna!" />
                 </div>
                 <div className="cd-timeline-content">
                     <h2><a href="#">{this.props.username}</a></h2>

@@ -10,13 +10,13 @@
         <div class="genus-details">
             <dl class="genus-details-list">
                 <dt>Subfamily:</dt>
-                <dd>{{ genus.subFamily }}</dd>
+                <dd>{{ genus.subFamily.name }}</dd>
                 <dt>Known Species:</dt>
-                <dd>{{ genus.speciesCount }}</dd>
+                <dd>{{ genus.speciesCount|number_format }}</dd>
                 <dt>Fun Fact:</dt>
                 <dd>{{ genus.funFact|markdownify }}</dd>
-                <dt>Recent Notes:</dt>
-                <dd>{{ recentNotesCount }}</dd>
+                <dt>Recent Notes</dt>
+                <dd>{{ recentNoteCount }}</dd>
             </dl>
         </div>
     </div>
@@ -24,25 +24,18 @@
 {% endblock %}
 
 {% block javascripts %}
-    {#parent so we can fetch the parent scripts from base.html.twig#}
     {{ parent() }}
-
-    {#Reactjs external scripts#}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.3/react.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.3/react-dom.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
-    {#Script that points to a file to our project#}
-    {#Reactjs app that  uses our api to build all same markup #}
-    {#that we had before dynamically using ajax calls#}
+
     <script type="text/babel" src="{{ asset('js/notes.react.js') }}"></script>
     <script type="text/babel">
-        {# get the url to the API end point #}
-        var notesUrl = '{{ path('genus_show_notes',{'name': genus.name}) }}';
+        var notesUrl = '{{ path('genus_show_notes', {'name': genus.name}) }}';
 
         ReactDOM.render(
-            // pass to react as a prop
-            <NoteSection url={notesUrl}/>,
-            document.getElementById('js-notes-wrapper')
+          <NoteSection url={notesUrl} />,
+          document.getElementById('js-notes-wrapper')
         );
     </script>
 {% endblock %}

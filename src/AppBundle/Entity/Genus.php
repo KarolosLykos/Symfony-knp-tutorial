@@ -4,7 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints\DateTime;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\GenusRepository")
@@ -20,16 +20,21 @@ class Genus
     private $id;
 
     /**
+     * @Assert\NotBlank()
      * @ORM\Column(type="string")
      */
     private $name;
 
     /**
-     * @ORM\Column(type="string")
+     * @Assert\NotBlank()
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\SubFamily")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $subFamily;
 
     /**
+     * @Assert\NotBlank()
+     * @Assert\Range(min=0, minMessage="Oups")
      * @ORM\Column(type="integer")
      */
     private $speciesCount;
@@ -45,16 +50,28 @@ class Genus
     private $isPublished = true;
 
     /**
+     * @Assert\NotBlank()
+     * @ORM\Column(type="date")
+     */
+    private $firstDiscoveredAt;
+
+    /**
      * @ORM\OneToMany(targetEntity="GenusNote", mappedBy="genus")
-     * @ORM\OrderBy({"createdAt"="DESC"})
+     * @ORM\OrderBy({"createdAt" = "DESC"})
      */
     private $notes;
 
-    function __construct()
+    public function __construct()
     {
-        // initialise the notes property to array collection
         $this->notes = new ArrayCollection();
     }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+
 
     public function getName()
     {
@@ -66,12 +83,15 @@ class Genus
         $this->name = $name;
     }
 
+    /**
+     * @return SubFamily
+     */
     public function getSubFamily()
     {
         return $this->subFamily;
     }
 
-    public function setSubFamily($subFamily)
+    public function setSubFamily(SubFamily $subFamily = null)
     {
         $this->subFamily = $subFamily;
     }
@@ -88,7 +108,7 @@ class Genus
 
     public function getFunFact()
     {
-        return '**TEST** '.$this->funFact;
+        return $this->funFact;
     }
 
     public function setFunFact($funFact)
@@ -98,7 +118,7 @@ class Genus
 
     public function getUpdatedAt()
     {
-        return new \DateTime('-'.rand(0,100).' days');
+        return new \DateTime('-'.rand(0, 100).' days');
     }
 
     public function setIsPublished($isPublished)
@@ -106,11 +126,27 @@ class Genus
         $this->isPublished = $isPublished;
     }
 
+    public function getIsPublished()
+    {
+        return $this->isPublished;
+    }
+
+
     /**
      * @return ArrayCollection|GenusNote[]
      */
     public function getNotes()
     {
         return $this->notes;
+    }
+
+    public function getFirstDiscoveredAt()
+    {
+        return $this->firstDiscoveredAt;
+    }
+
+    public function setFirstDiscoveredAt(\DateTime $firstDiscoveredAt = null)
+    {
+        $this->firstDiscoveredAt = $firstDiscoveredAt;
     }
 }

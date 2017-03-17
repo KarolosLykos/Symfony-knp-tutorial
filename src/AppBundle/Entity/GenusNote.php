@@ -43,13 +43,6 @@ class GenusNote
      */
     private $genus;
 
-
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
     public function getUsername()
     {
         return $this->username;
@@ -64,7 +57,6 @@ class GenusNote
     {
         return $this->userAvatarFilename;
     }
-
 
     public function setUserAvatarFilename($userAvatarFilename)
     {
@@ -101,5 +93,8 @@ class GenusNote
         $this->genus = $genus;
     }
 
-
+    public function getId()
+    {
+        return $this->id;
+    }
 }

@@ -14,8 +14,3 @@
 !var/SymfonyRequirements.php
 /vendor/
 /web/bundles/
-<<<<<<< HEAD
-.idea/workspace.xml
-=======
-
->>>>>>> doctrine_database
