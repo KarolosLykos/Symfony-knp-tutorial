@@ -25,6 +25,14 @@ class User implements UserInterface
      */
     private $email;
 
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $password;
+
+    private $plainPassword;
+
     public function getUsername()
     {
         return $this->email;
@@ -35,15 +43,38 @@ class User implements UserInterface
         return ['ROLE_USER'];
     }
 
-    public function getPassword(){    }
+    public function getPassword(){
+        return $this->password;
+    }
 
     public function getSalt(){    }
 
-    public function eraseCredentials(){    }
+    public function eraseCredentials(){
+        // prevent the plainPassword to be saved accidentally anywhere
+        $this->plainPassword = null;
+    }
 
     public function setEmail($email)
     {
         $this->email = $email;
+    }
+
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword($plainPassword)
+    {
+        $this->plainPassword = $plainPassword;
+        // guarantees that the entity looks "dirty" to doctrine
+        // when changing the plainPassword
+        $this->password = null;
     }
 
 
