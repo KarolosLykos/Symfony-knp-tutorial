@@ -1,15 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: user
- * Date: 20/3/2017
- * Time: 11:40 πμ
- */
 
 namespace AppBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
+
+use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\UserInterface;
+
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
@@ -23,7 +20,6 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      */
     private $id;
-
     /**
      * @ORM\Column(type="string", unique=true)
      */
@@ -31,7 +27,7 @@ class User implements UserInterface
 
     public function getUsername()
     {
-        return $this->email();
+        return $this->email;
     }
 
     public function getRoles()
