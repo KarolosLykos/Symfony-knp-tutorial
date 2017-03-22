@@ -61,6 +61,11 @@ class Genus
      */
     private $notes;
 
+    /**
+     * @ORM\Column(type="string", unique=true)
+     */
+    private $slug;
+
     public function __construct()
     {
         $this->notes = new ArrayCollection();
@@ -149,4 +154,16 @@ class Genus
     {
         $this->firstDiscoveredAt = $firstDiscoveredAt;
     }
+
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+    }
+
+
 }
