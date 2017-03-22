@@ -2,7 +2,6 @@
 
 namespace AppBundle\Entity;
 
-
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -10,9 +9,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @ORM\Table(name="user")
- * @UniqueEntity(fields={"email"}, message="There is already an account with that email")
+ * @UniqueEntity(fields={"email"}, message="It looks like you already have an account!")
  */
 class User implements UserInterface
 {
@@ -30,14 +29,18 @@ class User implements UserInterface
      */
     private $email;
 
-
     /**
+     * The encoded password
+     *
      * @ORM\Column(type="string")
      */
     private $password;
 
     /**
+     * A non-persisted field that's used to create the encoded password.
      * @Assert\NotBlank(groups={"Registration"})
+     *
+     * @var string
      */
     private $plainPassword;
 
@@ -46,6 +49,37 @@ class User implements UserInterface
      */
     private $roles = [];
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isScientist = false;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $firstName;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $lastName;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $avatarUri;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $universityName;
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    // needed by the security system
     public function getUsername()
     {
         return $this->email;
@@ -54,6 +88,8 @@ class User implements UserInterface
     public function getRoles()
     {
         $roles = $this->roles;
+
+        // give everyone ROLE_USER!
         if (!in_array('ROLE_USER', $roles)) {
             $roles[] = 'ROLE_USER';
         }
@@ -61,15 +97,29 @@ class User implements UserInterface
         return $roles;
     }
 
-    public function getPassword(){
+    public function setRoles(array $roles)
+    {
+        $this->roles = $roles;
+    }
+
+    public function getPassword()
+    {
         return $this->password;
     }
 
-    public function getSalt(){    }
+    public function getSalt()
+    {
+        // leaving blank - I don't need/have a password!
+    }
 
-    public function eraseCredentials(){
-        // prevent the plainPassword to be saved accidentally anywhere
+    public function eraseCredentials()
+    {
         $this->plainPassword = null;
+    }
+
+    public function getEmail()
+    {
+        return $this->email;
     }
 
     public function setEmail($email)
@@ -90,19 +140,63 @@ class User implements UserInterface
     public function setPlainPassword($plainPassword)
     {
         $this->plainPassword = $plainPassword;
-        // guarantees that the entity looks "dirty" to doctrine
-        // when changing the plainPassword
+        // forces the object to look "dirty" to Doctrine. Avoids
+        // Doctrine *not* saving this entity, if only plainPassword changes
         $this->password = null;
     }
 
-    public function setRoles($roles)
+    public function isScientist()
     {
-        $this->roles = $roles;
+        return $this->isScientist;
     }
 
-    public function getEmail()
+    public function setIsScientist($isScientist)
     {
-        return $this->email;
+        $this->isScientist = $isScientist;
     }
 
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+    }
+
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+    }
+
+    public function getAvatarUri()
+    {
+        return $this->avatarUri;
+    }
+
+    public function setAvatarUri($avatarUri)
+    {
+        $this->avatarUri = $avatarUri;
+    }
+
+    public function getUniversityName()
+    {
+        return $this->universityName;
+    }
+
+    public function setUniversityName($universityName)
+    {
+        $this->universityName = $universityName;
+    }
+
+    public function getFullName()
+    {
+        return trim($this->getFirstName().' '.$this->getLastName());
+    }
 }

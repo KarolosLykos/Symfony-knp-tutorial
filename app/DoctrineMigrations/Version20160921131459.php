@@ -8,7 +8,7 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20170322103039 extends AbstractMigration
+class Version20160921131459 extends AbstractMigration
 {
     /**
      * @param Schema $schema
@@ -18,8 +18,7 @@ class Version20170322103039 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE genus ADD slug VARCHAR(255) NOT NULL');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_38C5106E989D9B62 ON genus (slug)');
+        $this->addSql('ALTER TABLE user ADD is_scientist TINYINT(1) NOT NULL, ADD first_name VARCHAR(255) DEFAULT NULL, ADD last_name VARCHAR(255) DEFAULT NULL, ADD avatar_uri VARCHAR(255) DEFAULT NULL, ADD university_name VARCHAR(255) DEFAULT NULL');
     }
 
     /**
@@ -30,7 +29,6 @@ class Version20170322103039 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('DROP INDEX UNIQ_38C5106E989D9B62 ON genus');
-        $this->addSql('ALTER TABLE genus DROP slug');
+        $this->addSql('ALTER TABLE user DROP is_scientist, DROP first_name, DROP last_name, DROP avatar_uri, DROP university_name');
     }
 }

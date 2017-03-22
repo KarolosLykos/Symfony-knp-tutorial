@@ -1,47 +1,26 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: user
- * Date: 20/3/2017
- * Time: 12:32 μμ
- */
 
 namespace AppBundle\Security;
 
 use AppBundle\Form\LoginForm;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
-use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 {
-    use TargetPathTrait;
-
     private $formFactory;
     private $em;
-    /**
-     * @var RouterInterface
-     */
     private $router;
-    /**
-     * @var UserPasswordEncoder
-     */
     private $passwordEncoder;
-    // Dependency injection
-    // formfactory we want to call create() method from formfactoryinterface
-    // em we want to get the user object using the entity manager's method getRepository()
-    function __construct(FormFactoryInterface $formFactory, EntityManager $em, RouterInterface $router, UserPasswordEncoder $passwordEncoder)
+
+    public function __construct(FormFactoryInterface $formFactory, EntityManager $em, RouterInterface $router, UserPasswordEncoder $passwordEncoder)
     {
         $this->formFactory = $formFactory;
         $this->em = $em;
@@ -51,34 +30,30 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     public function getCredentials(Request $request)
     {
-        // if the form is the login form and the button submit is posting to the form
-        // else return null
-        $isLoginSubmit = $request->getPathInfo() === '/login' && $request->isMethod('POST');
-        if (!$isLoginSubmit){
-            // if return = null authentication is skipped
-            // else symfony calls getUser
-            return null;
+        $isLoginSubmit = $request->getPathInfo() == '/login' && $request->isMethod('POST');
+        if (!$isLoginSubmit) {
+            // skip authentication
+            return;
         }
 
         $form = $this->formFactory->create(LoginForm::class);
         $form->handleRequest($request);
-        $data = $form->getData();
 
+        $data = $form->getData();
         $request->getSession()->set(
             Security::LAST_USERNAME,
             $data['_username']
         );
-        return $data;
 
+        return $data;
     }
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-       $username = $credentials['_username'];
+        $username = $credentials['_username'];
 
-       // We are calling everything username but in our app, $username is an email address
-       return $this->em->getRepository('AppBundle:User')
-           ->findOneBy(['email' => $username]);
+        return $this->em->getRepository('AppBundle:User')
+            ->findOneBy(['email' => $username]);
     }
 
     public function checkCredentials($credentials, UserInterface $user)
@@ -97,16 +72,8 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         return $this->router->generate('security_login');
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    protected function getDefaultSuccessRedirectUrl()
     {
-        // if the user hits a secure page and start() was called, this was
-        // the URL they were on, and probably where you want to redirect to
-        $targetPath = $this->getTargetPath($request->getSession(), $providerKey);
-
-        if (!$targetPath) {
-            $targetPath = $this->router->generate('homepage');
-        }
-        return new RedirectResponse($targetPath);
+        return $this->router->generate('homepage');
     }
-
 }

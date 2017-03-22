@@ -2,6 +2,7 @@
 
 namespace AppBundle\Form;
 
+use AppBundle\Entity\SubFamily;
 use AppBundle\Repository\SubFamilyRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -19,18 +20,17 @@ class GenusFormType extends AbstractType
         $builder
             ->add('name')
             ->add('subFamily', EntityType::class, [
-                'class' => 'AppBundle\Entity\SubFamily',
-                'query_builder' => function (SubFamilyRepository $repo) {
-                        return $repo->createAlphabeticalQueryBuilder();
-                },
-
-                'placeholder' => 'Choose A sub Family',
+                'placeholder' => 'Choose a Sub Family',
+                'class' => SubFamily::class,
+                'query_builder' => function(SubFamilyRepository $repo) {
+                    return $repo->createAlphabeticalQueryBuilder();
+                }
             ])
             ->add('speciesCount')
-            ->add('funFact', null ,[
+            ->add('funFact', null, [
                 'help' => 'For example, Leatherback sea turtles can travel more than 10,000 miles every year!'
             ])
-            ->add('isPublished', ChoiceType::class,[
+            ->add('isPublished', ChoiceType::class, [
                 'choices' => [
                     'Yes' => true,
                     'No' => false,
@@ -38,17 +38,11 @@ class GenusFormType extends AbstractType
             ])
             ->add('firstDiscoveredAt', DateType::class, [
                 'widget' => 'single_text',
-                'attr' => [
-                    'class' => 'js-datepicker'
-                ],
-                'html5' => 'false'
-            ]);
+                'attr' => ['class' => 'js-datepicker'],
+                'html5' => false,
+            ])
+        ;
     }
-
-//    public function finishView(FormView $view, FormInterface $form, array $options)
-//    {
-//        $view['funFact']->vars['help'] = 'For example, Leatherback sea turtles can travel more than 10,000 miles every year!';
-//    }
 
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -56,5 +50,4 @@ class GenusFormType extends AbstractType
             'data_class' => 'AppBundle\Entity\Genus'
         ]);
     }
-
 }
