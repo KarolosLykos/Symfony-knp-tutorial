@@ -67,7 +67,7 @@ class GenusAdminController extends Controller
 
         // only handles data on POST
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isValid()) {
             $genus = $form->getData();
 
             $em = $this->getDoctrine()->getManager();

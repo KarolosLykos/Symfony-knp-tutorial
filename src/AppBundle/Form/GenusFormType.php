@@ -2,11 +2,15 @@
 
 namespace AppBundle\Form;
 
+use AppBundle\Entity\GenusScientist;
 use AppBundle\Entity\SubFamily;
+use AppBundle\Entity\User;
 use AppBundle\Repository\SubFamilyRepository;
+use AppBundle\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -40,6 +44,13 @@ class GenusFormType extends AbstractType
                 'widget' => 'single_text',
                 'attr' => ['class' => 'js-datepicker'],
                 'html5' => false,
+            ])
+
+            ->add('genusScientists',CollectionType::class,[
+                'entry_type' => GenusScientistEmbeddedForm::class,
+                'allow_delete' => true,
+                'allow_add' => true,
+                'by_reference' => false,
             ])
         ;
     }
