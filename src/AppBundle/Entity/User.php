@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -73,6 +74,19 @@ class User implements UserInterface
      * @ORM\Column(type="string", nullable=true)
      */
     private $universityName;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Genus",
+     *     mappedBy="genusScientists"
+     * )
+     * @ORM\OrderBy({"name" = "ASC"})
+     */
+    private $studiedGenuses;
+
+    public function __construct()
+    {
+        $this->studiedGenuses = new ArrayCollection();
+    }
 
     public function getId()
     {
@@ -198,5 +212,13 @@ class User implements UserInterface
     public function getFullName()
     {
         return trim($this->getFirstName().' '.$this->getLastName());
+    }
+
+    /**
+     * @return ArrayCollection|Genus[]
+     */
+    public function getStudiedGenuses()
+    {
+        return $this->studiedGenuses;
     }
 }

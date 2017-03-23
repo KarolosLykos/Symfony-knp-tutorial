@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Genus;
 use AppBundle\Entity\GenusNote;
+use AppBundle\Entity\User;
 use AppBundle\Service\MarkdownTransformer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -113,5 +114,35 @@ class GenusController extends Controller
         ];
 
         return new JsonResponse($data);
+    }
+
+    /**
+     * @Route("/genus/{genusId}/scientist/{userId}", name="genus_scientist_remove", name="genus_scientist_remove")
+     * @Method("DELETE")
+     */
+    public function removeGenusScientistAction($genusId, $userId)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var Genus $genus */
+        $genus = $em->getRepository('AppBundle:Genus')
+            ->find($genusId);
+
+        if (!$genus){
+            throw $this->createNotFoundException('Genus not Fount!');
+        }
+        /** @var User $user */
+        $genusScientist = $em->getRepository('AppBundle:User')
+            ->find($userId);
+
+        if (!$genusScientist){
+            throw $this->createNotFoundException('Genus Scientist not Fount!');
+        }
+
+        $genus->removeGenusScientist($genusScientist);
+        $em->persist($genus);
+        $em->flush();
+
+        return new Response(null, 204);
     }
 }
