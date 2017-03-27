@@ -68,8 +68,12 @@ class GenusController extends Controller
         $genuses = $em->getRepository('AppBundle:Genus')
             ->findAllPublishedOrderedByRecentlyActive();
 
+        $users = $em->getRepository('AppBundle:User')
+            ->findAll();
+
         return $this->render('genus/list.html.twig', [
-            'genuses' => $genuses
+            'genuses' => $genuses,
+            'users' => $users
         ]);
     }
 

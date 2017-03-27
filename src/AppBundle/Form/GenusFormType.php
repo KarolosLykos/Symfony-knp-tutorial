@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -60,5 +61,15 @@ class GenusFormType extends AbstractType
         $resolver->setDefaults([
             'data_class' => 'AppBundle\Entity\Genus'
         ]);
+    }
+
+    /**
+    * @param FormEvent $event
+    */
+    public function onPreSubmit(FormEvent $event)
+    {
+        $data = $event->getData();
+        $data['genusScientists'] = array_values($data['genusScientists']);
+        $event->setData($data);
     }
 }
